@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management\\API-Estate-management.csproj": {}
+    "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management-system\\API-Estate-management\\API-Estate-management.csproj": {}
   },
   "projects": {
-    "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management\\API-Estate-management.csproj": {
+    "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management-system\\API-Estate-management\\API-Estate-management.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management\\API-Estate-management.csproj",
+        "projectUniqueName": "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management-system\\API-Estate-management\\API-Estate-management.csproj",
         "projectName": "API-Estate-management",
-        "projectPath": "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management\\API-Estate-management.csproj",
+        "projectPath": "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management-system\\API-Estate-management\\API-Estate-management.csproj",
         "packagesPath": "C:\\Users\\MiTaKuYa\\.nuget\\packages\\",
-        "outputPath": "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management\\obj\\",
+        "outputPath": "D:\\Housing estate\\API_SIM\\API-Estate-management\\API-Estate-management-system\\API-Estate-management\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\MiTaKuYa\\AppData\\Roaming\\NuGet\\NuGet.Config",
