@@ -34,7 +34,7 @@ namespace API_Estate_management
         {
             services.AddControllers();
 
-            // Call to Angular
+            // Enable Cors Call to Angular
             services.AddCors(options =>
             {
                 options.AddPolicy(
@@ -46,18 +46,31 @@ namespace API_Estate_management
             });
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
 
+            // Add Authorization set Role access location
+            services.AddAuthorization(options =>
+            {
+                options.AddPolicy("RequireLoggedIn", policy => policy.RequireRole("Admin", "Manager", "Guest").RequireAuthenticatedUser());
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireAuthenticatedUser());
+            });
+
             // Add database
             services.AddDbContext<ApplicationDbContext>(options => 
                 options.UseSqlServer(Configuration.GetConnectionString("IdentityConnection")));
 
+            // Specifiying we are going to use Identity
             services.AddIdentity<ApplicationUser, ApplicationRole>(options =>
             {
-                // PasswordHash
+                // Password
                 options.Password.RequireDigit = false;
                 options.Password.RequireNonAlphanumeric = false;
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequiredLength = 4;
+
+                // Logout settings.
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(5);
+                options.Lockout.MaxFailedAccessAttempts = 5;
+                options.Lockout.AllowedForNewUsers = true;
             })
                 .AddEntityFrameworkStores<ApplicationDbContext>()
                 .AddDefaultTokenProviders();
@@ -65,7 +78,7 @@ namespace API_Estate_management
             // Inject AppSettings
             services.Configure<ApplicationSettings>(Configuration.GetSection("ApplicationSettings"));
 
-            // JSON Lwt Auth
+            // JSON Jwt Auth
             var key = Encoding.UTF8.GetBytes(Configuration["ApplicationSettings:JWT_Secret"].ToString());
 
             // Jwt Auth 
@@ -73,6 +86,7 @@ namespace API_Estate_management
             {
                 options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+                options.DefaultScheme = JwtBearerDefaults.AuthenticationScheme;
             }).AddJwtBearer(options =>
             {
                 options.RequireHttpsMetadata = false;

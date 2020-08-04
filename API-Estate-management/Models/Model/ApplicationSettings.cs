@@ -8,5 +8,9 @@ namespace API_Estate_management.Models.Model
     public class ApplicationSettings
     {
         public string JWT_Secret { get; set; }
+
+        public string ExpiryTime { get; set; }
+
+        public string DefaultImageUrl { get; set; }
     }
 }

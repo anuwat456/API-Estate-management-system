@@ -12,6 +12,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
@@ -35,11 +36,13 @@ namespace API_Estate_management.Controllers
             _options = options;
         }
 
-        [HttpPost]
-        [Route("Register")]
+        [HttpPost("[action]")]
         // POST: api/ApplicationAuthUser/Register
         public async Task<IActionResult> Register(RegisterModel model)
         {
+            // Will hold all the errors related to registation
+            List<string> errorList = new List<string>();
+
             if (model == null)
             {
                 return NotFound();
@@ -59,7 +62,8 @@ namespace API_Estate_management.Controllers
                 var user = new ApplicationUser
                 {
                     Email = model.Email,
-                    UserName = model.UserName
+                    UserName = model.UserName,
+                    SecurityStamp = Guid.NewGuid().ToString()
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -72,7 +76,7 @@ namespace API_Estate_management.Controllers
                     return BadRequest(result.Errors);
                 }
             }
-            return StatusCode(StatusCodes.Status400BadRequest);
+            return BadRequest(new JsonResult(errorList));
         }
 
         // Checking existes username and email
@@ -97,8 +101,7 @@ namespace API_Estate_management.Controllers
             return false;
         }
 
-        [HttpPost]
-        [Route("Login")]
+        [HttpPost("[action]")]
         // POST: api/ApplicationAuthUser/Login
         public async Task<IActionResult> Login(LoginModel model)
         {
@@ -114,6 +117,8 @@ namespace API_Estate_management.Controllers
                     return BadRequest("You have incorrectly entered your Email or Password.");
                 }
 
+                double tokenExpireTime = Convert.ToDouble(_options.Value.ExpiryTime);
+
                 var result = await _signInManager.PasswordSignInAsync(user, model.Password, false, false);
                 if (result.Succeeded)
                 {
@@ -124,16 +129,17 @@ namespace API_Estate_management.Controllers
                     {
                         Subject = new ClaimsIdentity(new Claim[]
                         {
-                        new Claim(ClaimTypes.Role, "User"),
+                        new Claim(ClaimTypes.Role, "Admin"),
+                        new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                         new Claim("UserId", user.Id.ToString())
                         }),
-                        Expires = DateTime.UtcNow.AddDays(1),
+                        Expires = DateTime.UtcNow.AddDays(tokenExpireTime),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                     };
                     var token = tokenHandler.CreateToken(tokenDescriptor);
 
                     // Return basic user info and authentication token
-                    var value = new ApplicationAuthUser
+                    var value = new AuthUser
                     {
                         Email = model.Email,
                         Token = tokenHandler.WriteToken(token)
@@ -149,8 +155,7 @@ namespace API_Estate_management.Controllers
             return StatusCode(StatusCodes.Status204NoContent);
         }
 
-        [HttpGet]
-        [Route("GetUserProfile")]
+        [HttpGet("[action]")]
         // GET: api/ApplicationAuthUser/GetUserProfile
         public async Task<Object> GetUserProfile()
         {
@@ -162,6 +167,95 @@ namespace API_Estate_management.Controllers
                 user.Email,
                 user.UserName
             };
+        }
+
+        [HttpPost("[action]")]
+        [Authorize(Policy = "RequireLoggedIn")]
+        // GET: api/ApplicationAuthUser/GetUsers
+        public IActionResult GetUsers()
+        {
+            return Ok(_context.Users.ToList());
+        }
+
+        [HttpPost("[action]")]
+        [Authorize(Policy = "RequireAdministratorRole")]
+        // POST: api/ApplicationAuthUser/AddUser
+        public async Task<IActionResult> AddUser([FromBody] ApplicationUser formmodel)
+        {
+            var newuser = new ApplicationUser
+            {
+                NumberId = formmodel.NumberId,
+                FullName = formmodel.FullName,
+                UserName = formmodel.UserName,
+                Email = formmodel.Email,
+                PasswordHash = formmodel.PasswordHash,
+                PhoneNumber = formmodel.PhoneNumber,
+                AddressLine = formmodel.AddressLine,
+                BirthDate = formmodel.BirthDate,
+                Image = _options.Value.DefaultImageUrl
+            };
+
+            await _context.Users.AddAsync(newuser);
+            await _context.SaveChangesAsync();
+
+            return Ok(new JsonResult("The User was add Successfully"));
+        }
+
+        [HttpPut("action/{id}")]
+        [Authorize(Policy = "RequireAdministratorRole")]
+        // PUT: api/ApplicationAuthUser/UpdateUser
+        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] ApplicationUser formmodel)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            var findUser = _context.Users.FirstOrDefault(u => u.Id == id);
+            if (findUser == null)
+            {
+                return NotFound();
+            }
+
+            // The User was found
+            findUser.NumberId = formmodel.NumberId;
+            findUser.FullName = formmodel.FullName;
+            findUser.UserName = formmodel.UserName;
+            findUser.Email = formmodel.Email;
+            findUser.PhoneNumber = formmodel.PhoneNumber;
+            findUser.AddressLine = formmodel.AddressLine;
+            findUser.BirthDate = formmodel.BirthDate;
+            findUser.Image = formmodel.Image;
+
+            _context.Entry(findUser).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+
+            // Finally return the result to client
+            return Ok(new JsonResult("The User with id " + id + " is Update."));
+        }
+
+        [HttpDelete("[action]/{id}")]
+        [Authorize(Policy = "RequireAdministratorRole")]
+        // DELETE: api/ApplicationAuthUser/DeleteUser
+        public async Task<IActionResult> DeleteUser([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            // The User was found
+            var findUser = await _context.Users.FindAsync(id);
+            if (findUser == null)
+            {
+                return NotFound();
+            }
+
+            _context.Users.Remove(findUser);
+            await _context.SaveChangesAsync();
+
+            // Finally return the result to client
+            return Ok(new JsonResult("The User with id " + id + " is Delete."));
         }
     }
 }
