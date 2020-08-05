@@ -11,6 +11,8 @@ namespace API_Estate_management.Models.Model
 
         public string ExpiryTime { get; set; }
 
+        public string ValidAudience { get; set; }
+       
         public string DefaultImageUrl { get; set; }
     }
 }

@@ -1,10 +1,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using API_Estate_management.Models.Model;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -49,6 +51,10 @@ namespace API_Estate_management
             // Add Authorization set Role access location
             services.AddAuthorization(options =>
             {
+                /*var userAuthPolicyBuilder = new AuthorizationPolicyBuilder();
+
+                options.DefaultPolicy = userAuthPolicyBuilder.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Email).Build();
+                */
                 options.AddPolicy("RequireLoggedIn", policy => policy.RequireRole("Admin", "Manager", "Guest").RequireAuthenticatedUser());
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireAuthenticatedUser());
             });
@@ -96,8 +102,9 @@ namespace API_Estate_management
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false
+                    ValidateIssuer = true,
+                    ValidateAudience = true,
+                    ValidAudience = Configuration["ApplicationSettings:ValidAudience"]
                 };
             });
         }

@@ -8,7 +8,7 @@ using System.Threading.Tasks;
 
 namespace API_Estate_management.Models.Model
 {
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, string>
     {
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options)
         {
@@ -16,7 +16,7 @@ namespace API_Estate_management.Models.Model
         }
 
         // Create Roles for or application
-
+        /*
         protected override void OnModelCreating(ModelBuilder builder)
         {
             base.OnModelCreating(builder);
@@ -28,5 +28,6 @@ namespace API_Estate_management.Models.Model
                 new { Id = "3", Name = "Guest", NormalizationName = "GUEST" }
             );
         }
+        */
     }
 }
