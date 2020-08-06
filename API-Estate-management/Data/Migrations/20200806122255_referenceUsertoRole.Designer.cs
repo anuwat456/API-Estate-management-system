@@ -4,14 +4,16 @@ using API_Estate_management.Models.Model;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace API_Estate_management.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200806122255_referenceUsertoRole")]
+    partial class referenceUsertoRole
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -109,9 +111,6 @@ namespace API_Estate_management.Data.Migrations
                         .HasColumnType("bit");
 
                     b.Property<string>("RoleId")
-                        .HasColumnType("nvarchar(max)");
-
-                    b.Property<string>("RolesId")
                         .HasColumnType("nvarchar(450)");
 
                     b.Property<string>("SecurityStamp")
@@ -134,7 +133,7 @@ namespace API_Estate_management.Data.Migrations
                         .HasName("UserNameIndex")
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
-                    b.HasIndex("RolesId");
+                    b.HasIndex("RoleId");
 
                     b.ToTable("AspNetUsers");
                 });
@@ -245,9 +244,9 @@ namespace API_Estate_management.Data.Migrations
 
             modelBuilder.Entity("API_Estate_management.Models.Model.ApplicationUser", b =>
                 {
-                    b.HasOne("API_Estate_management.Models.Model.ApplicationRole", "Roles")
-                        .WithMany("Users")
-                        .HasForeignKey("RolesId");
+                    b.HasOne("API_Estate_management.Models.Model.ApplicationRole", "Role")
+                        .WithMany("User")
+                        .HasForeignKey("RoleId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

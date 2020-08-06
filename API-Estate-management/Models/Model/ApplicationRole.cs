@@ -8,5 +8,6 @@ namespace API_Estate_management.Models.Model
 {
     public class ApplicationRole : IdentityRole
     {
+        public virtual ICollection<ApplicationUser> Users { get; set; }
     }
 }

@@ -43,7 +43,7 @@ namespace API_Estate_management.Controllers
 
         [HttpPost("[action]")]
         // POST: api/ApplicationAuthUser/Register
-        public async Task<IActionResult> Register(RegisterModel model)
+        public async Task<IActionResult> Register([FromBody] RegisterModel model)
         {
             // Will hold all the errors related to registation
             List<string> errorList = new List<string>();
@@ -68,15 +68,16 @@ namespace API_Estate_management.Controllers
                 {
                     Email = model.Email,
                     UserName = model.UserName,
-                    SecurityStamp = Guid.NewGuid().ToString()
+                    SecurityStamp = Guid.NewGuid().ToString(),
+                    RoleId = "2"                // Set default role is Manager
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {    
-                    if (await _roleManager.RoleExistsAsync(ApplicationUserRoles.Manager))
+                    if (await _roleManager.RoleExistsAsync(ApplicationUserRole.Manager))
                     {
-                        await _userManager.AddToRoleAsync(user, ApplicationUserRoles.Manager);
+                        await _userManager.AddToRoleAsync(user, ApplicationUserRole.Manager);
                     }
                                         
                     return Ok(result);
@@ -113,7 +114,7 @@ namespace API_Estate_management.Controllers
 
         [HttpPost("[action]")]
         // POST: api/ApplicationAuthUser/Login
-        public async Task<IActionResult> Login(LoginModel model)
+        public async Task<IActionResult> Login([FromBody] LoginModel model)
         {
             if (model == null)
             {
@@ -136,20 +137,23 @@ namespace API_Estate_management.Controllers
                     var tokenHandler = new JwtSecurityTokenHandler();
                     var key = Encoding.ASCII.GetBytes(_options.Value.JWT_Secret);
 
-                    var UserRoles = await _userManager.GetRolesAsync(user);
+                    // Find Role of User for Auth
+                    var userRole = await _roleManager.FindByIdAsync(user.RoleId);
+                    var roles = await _roleManager.GetRoleNameAsync(userRole);
 
                     var tokenDescriptor = new SecurityTokenDescriptor
                     {
                         Subject = new ClaimsIdentity(new Claim[]
                         {
                             new Claim(ClaimTypes.Email, user.Email),
-                            new Claim(ClaimTypes.Role, ""),
+                            new Claim(ClaimTypes.Role, roles),
                             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                             new Claim("UserId", user.Id.ToString())
                         }),
                         Expires = DateTime.UtcNow.AddDays(tokenExpireTime),
                         SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
                     };
+                    
                     var token = tokenHandler.CreateToken(tokenDescriptor);
 
                     // Return basic user info and authentication token
@@ -158,6 +162,7 @@ namespace API_Estate_management.Controllers
                         Email = model.Email,
                         Token = tokenHandler.WriteToken(token)
                     };
+                    
 
                     return Ok(value);
                 }
@@ -184,7 +189,7 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpGet("[action]")]
-        // [Authorize(Policy = "RequireLoggedIn")]
+        //[Authorize(Policy = "RequireLoggedIn")]
         // GET: api/ApplicationAuthUser/GetUsers
         public IActionResult GetUsers()
         {
@@ -192,7 +197,7 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpPost("[action]")]
-        // [Authorize(Policy = "RequireAdministratorRole")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         // POST: api/ApplicationAuthUser/AddUser
         public async Task<IActionResult> AddUser([FromBody] ApplicationUser user)
         {
@@ -220,7 +225,7 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpPut("action/{id}")]
-        // [Authorize(Policy = "RequireAdministratorRole")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         // PUT: api/ApplicationAuthUser/UpdateUser/id
         public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] ApplicationUser user)
         {
@@ -253,7 +258,7 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpDelete("[action]/{id}")]
-        // [Authorize(Policy = "RequireAdministratorRole")]
+        [Authorize(Policy = "RequireAdministratorRole")]
         // DELETE: api/ApplicationAuthUser/DeleteUser/id
         public async Task<IActionResult> DeleteUser([FromRoute] string id)
         {

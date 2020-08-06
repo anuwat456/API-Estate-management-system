@@ -25,5 +25,8 @@ namespace API_Estate_management.Models.Model
 
         [StringLength(100)]
         public string Image { get; set; }
+
+        public ApplicationRole Roles { get; set; }
+        public string RoleId { get; set; }
     }
 }

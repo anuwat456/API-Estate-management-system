@@ -48,16 +48,14 @@ namespace API_Estate_management
             });
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
 
+            /*
             // Add Authorization set Role access location
             services.AddAuthorization(options =>
             {
-                /*var userAuthPolicyBuilder = new AuthorizationPolicyBuilder();
-
-                options.DefaultPolicy = userAuthPolicyBuilder.RequireAuthenticatedUser().RequireClaim(ClaimTypes.Email).Build();
-                */
                 options.AddPolicy("RequireLoggedIn", policy => policy.RequireRole("Admin", "Manager", "Guest").RequireAuthenticatedUser());
                 options.AddPolicy("RequireAdministratorRole", policy => policy.RequireAuthenticatedUser());
             });
+            */
 
             // Add database
             services.AddDbContext<ApplicationDbContext>(options => 
