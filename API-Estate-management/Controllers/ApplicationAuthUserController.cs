@@ -69,7 +69,7 @@ namespace API_Estate_management.Controllers
                     Email = model.Email,
                     UserName = model.UserName,
                     SecurityStamp = Guid.NewGuid().ToString(),
-                    RoleId = "2"                // Set default role is Manager
+                    RoleId = _options.Value.SetRoleDefault                // Set Role default is Manager
                 };
 
                 var result = await _userManager.CreateAsync(user, model.Password);
@@ -145,7 +145,7 @@ namespace API_Estate_management.Controllers
                     {
                         Subject = new ClaimsIdentity(new Claim[]
                         {
-                            new Claim(ClaimTypes.Email, user.Email),
+                            new Claim(ClaimTypes.Email, model.Email),
                             new Claim(ClaimTypes.Role, roles),
                             new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                             new Claim("UserId", user.Id.ToString())
@@ -189,7 +189,7 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpGet("[action]")]
-        //[Authorize(Policy = "RequireLoggedIn")]
+        [Authorize(Policy = "RequireLoggedIn")]
         // GET: api/ApplicationAuthUser/GetUsers
         public IActionResult GetUsers()
         {
@@ -215,7 +215,8 @@ namespace API_Estate_management.Controllers
                 PhoneNumber = user.PhoneNumber,
                 AddressLine = user.AddressLine,
                 BirthDate = user.BirthDate,
-                Image = _options.Value.DefaultImageUrl
+                Image = _options.Value.DefaultImageUrl,
+                RoleId = _options.Value.SetRoleDefault          // Set Role default is Manager
             };
             
             await _context.Users.AddAsync(newuser);
@@ -274,11 +275,13 @@ namespace API_Estate_management.Controllers
                 return NotFound();
             }
 
+            var getName = await _userManager.GetUserNameAsync(findUser);
+
             _context.Users.Remove(findUser);
             await _context.SaveChangesAsync();
 
             // Finally return the result to client
-            return Ok(new JsonResult("The User with id " + id + " is Delete."));
+            return Ok(new JsonResult("The User with Username : " + getName + " is Delete."));
         }
     }
 }

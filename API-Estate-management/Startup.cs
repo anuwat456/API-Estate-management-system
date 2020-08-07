@@ -48,14 +48,12 @@ namespace API_Estate_management
             });
             services.AddAuthentication(IISDefaults.AuthenticationScheme);
 
-            /*
             // Add Authorization set Role access location
             services.AddAuthorization(options =>
             {
-                options.AddPolicy("RequireLoggedIn", policy => policy.RequireRole("Admin", "Manager", "Guest").RequireAuthenticatedUser());
-                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireAuthenticatedUser());
+                options.AddPolicy("RequireLoggedIn", policy => policy.RequireClaim(ClaimTypes.Role));
+                options.AddPolicy("RequireAdministratorRole", policy => policy.RequireClaim(ClaimTypes.Role, "Admin"));
             });
-            */
 
             // Add database
             services.AddDbContext<ApplicationDbContext>(options => 
@@ -100,8 +98,8 @@ namespace API_Estate_management
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidateAudience = true,
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
                     ValidAudience = Configuration["ApplicationSettings:ValidAudience"]
                 };
             });

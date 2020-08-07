@@ -11,7 +11,7 @@ using Microsoft.EntityFrameworkCore;
 
 namespace API_Estate_management.Controllers
 {
-    [Authorize]
+    [Authorize(Policy = "RequireAdministratorRole")]
     [Route("api/[controller]")]
     [ApiController]
     public class RoleController : ControllerBase
@@ -26,7 +26,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpGet("[action]")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // GET: api/Role/GetRoles
         public IActionResult GetRoles()
         {
@@ -34,7 +33,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpPost("[action]")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // POST: api/Role/AddRole
         public async Task<IActionResult> AddRole([FromBody] ApplicationRole role)
         {
@@ -50,7 +48,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpPut("action/{id}")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // PUT: api/Role/UpdateRole/id
         public async Task<IActionResult> UpdateRole([FromRoute] string id, [FromBody] ApplicationRole role)
         {
@@ -97,7 +94,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpDelete("[action]/{id}")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // DELETE: api/Role/DeleteRole/id
         public async Task<IActionResult> DeleteRole([FromRoute] string id)
         {
