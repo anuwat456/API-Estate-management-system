@@ -27,18 +27,16 @@ namespace API_Estate_management.Controllers
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IOptions<ApplicationSettings> _options;
         private readonly RoleManager<ApplicationRole> _roleManager;
-        private readonly IPasswordHasher<ApplicationUser> _passwordHasher;
 
         public ApplicationAuthUserController(ApplicationDbContext context, UserManager<ApplicationUser> userManager,
             SignInManager<ApplicationUser> signInManager, IOptions<ApplicationSettings> options,
-            RoleManager<ApplicationRole> roleManager, IPasswordHasher<ApplicationUser> passwordHasher)
+            RoleManager<ApplicationRole> roleManager)
         {
             _context = context;
             _userManager = userManager;
             _signInManager = signInManager;
             _options = options;
             _roleManager = roleManager;
-            _passwordHasher = passwordHasher;
         }
 
         [HttpPost("[action]")]
@@ -56,60 +54,36 @@ namespace API_Estate_management.Controllers
             {
                 if (EmailExistes(model.Email))
                 {
-                    return BadRequest("Email is not avaliable");
+                    return BadRequest("Email already exists in the database.");
                 }
-
                 if (UserNameExistes(model.UserName))
                 {
                     return BadRequest("UserName already exists in the database.");
                 }
 
-                var user = new ApplicationUser
+                if (IsEmailValid(model.Email))
                 {
-                    Email = model.Email,
-                    UserName = model.UserName,
-                    SecurityStamp = Guid.NewGuid().ToString(),
-                    RoleId = _options.Value.SetRoleDefault                // Set Role default is Manager
-                };
-
-                var result = await _userManager.CreateAsync(user, model.Password);
-                if (result.Succeeded)
-                {    
-                    if (await _roleManager.RoleExistsAsync(ApplicationUserRole.Manager))
+                    var user = new ApplicationUser
                     {
-                        await _userManager.AddToRoleAsync(user, ApplicationUserRole.Manager);
+                        Email = model.Email,
+                        UserName = model.UserName,
+                        SecurityStamp = Guid.NewGuid().ToString(),
+                        RoleId = _options.Value.SetRoleDefault                // Set Role default is Manager
+                    };
+
+                    var result = await _userManager.CreateAsync(user, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return Ok(result);
                     }
-                                        
-                    return Ok(result);
+                    else
+                    {
+                        return BadRequest(result.Errors);
+                    }
                 }
-                else
-                {
-                    return BadRequest(result.Errors);
-                }
+                return BadRequest(new JsonResult("Email is invalid"));
             }
             return BadRequest(new JsonResult(errorList));
-        }
-
-        // Checking existes username and email
-        private bool UserNameExistes(string userName)
-        {
-            return _context.Users.Any(x => x.UserName == userName);
-        }
-
-        private bool EmailExistes(string email)
-        {
-            return _context.Users.Any(x => x.Email == email);
-        }
-
-        // Checking type Email xx@xx.com && xx@xx.net
-        private bool IsEmailValid(string email)
-        {
-            Regex em = new Regex(@"\w+\@\w+.com|\w+\@\w+.net");
-            if (em.IsMatch(email))
-            {
-                return true;
-            }
-            return false;
         }
 
         [HttpPost("[action]")]
@@ -160,7 +134,7 @@ namespace API_Estate_management.Controllers
                     var value = new AuthUser
                     {
                         Email = model.Email,
-                        Token = tokenHandler.WriteToken(token)
+                        authTokenKey = tokenHandler.WriteToken(token)
                     };
                     
 
@@ -190,45 +164,69 @@ namespace API_Estate_management.Controllers
 
         [HttpGet("[action]")]
         [Authorize(Policy = "RequireLoggedIn")]
-        // GET: api/ApplicationAuthUser/GetUsers
-        public IActionResult GetUsers()
+        // GET: api/ApplicationAuthUser/GetAllUsers
+        public IActionResult GetAllUsers()
         {
             return Ok(_context.Users.ToList());
         }
 
         [HttpPost("[action]")]
         [Authorize(Policy = "RequireAdministratorRole")]
-        // POST: api/ApplicationAuthUser/AddUser
-        public async Task<IActionResult> AddUser([FromBody] ApplicationUser user)
+        // POST: api/ApplicationAuthUser/CreateUser
+        public async Task<IActionResult> CreateUser([FromBody] CreateUserModel model)
         {
-            // Passwordhash encoder
-            var passwordhash = _passwordHasher.HashPassword(user, user.PasswordHash);
-            user.SecurityStamp = Guid.NewGuid().ToString();
+            // Will hold all the errors related to registation
+            List<string> errorList = new List<string>();
 
-            var newuser = new ApplicationUser
+            if (model == null)
             {
-                NumberId = user.NumberId,
-                FullName = user.FullName,
-                UserName = user.UserName,
-                Email = user.Email,
-                PasswordHash = passwordhash,
-                PhoneNumber = user.PhoneNumber,
-                AddressLine = user.AddressLine,
-                BirthDate = user.BirthDate,
-                Image = _options.Value.DefaultImageUrl,
-                RoleId = _options.Value.SetRoleDefault          // Set Role default is Manager
-            };
-            
-            await _context.Users.AddAsync(newuser);
-            await _context.SaveChangesAsync();
+                return NotFound();
+            }
+            else if (ModelState.IsValid)
+            {
+                if (EmailExistes(model.Email))
+                {
+                    return BadRequest("Email already exists in the database.");
+                }
+                if (UserNameExistes(model.UserName))
+                {
+                    return BadRequest("UserName already exists in the database.");
+                }
 
-            return Ok(new JsonResult("The User was add Successfully"));
+                if (IsEmailValid(model.Email))
+                {
+                    var newuser = new ApplicationUser
+                    {
+                        NumberId = model.NumberId,
+                        FullName = model.FullName,
+                        UserName = model.UserName,
+                        Email = model.Email,
+                        PhoneNumber = model.PhoneNumber,
+                        AddressLine = model.AddressLine,
+                        BirthDate = model.BirthDate,
+                        Image = _options.Value.DefaultImageUrl,
+                        RoleId = _options.Value.SetRoleDefault          // Set Role default is Manager
+                    };
+
+                    var result = await _userManager.CreateAsync(newuser, model.Password);
+                    if (result.Succeeded)
+                    {
+                        return Ok(new JsonResult("The User was add Successfully"));
+                    }
+                    else
+                    {
+                        return BadRequest(result.Errors);
+                    }
+                }
+                return BadRequest(new JsonResult("Email is invalid"));
+            }
+            return BadRequest(new JsonResult(errorList));
         }
 
-        [HttpPut("action/{id}")]
+        [HttpPut("[action]/{id}")]
         [Authorize(Policy = "RequireAdministratorRole")]
         // PUT: api/ApplicationAuthUser/UpdateUser/id
-        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] ApplicationUser user)
+        public async Task<IActionResult> UpdateUser([FromRoute] string id, [FromBody] UpdateUserModel model)
         {
             if (!ModelState.IsValid)
             {
@@ -242,17 +240,32 @@ namespace API_Estate_management.Controllers
             }
 
             // The User was found
-            findUser.NumberId = user.NumberId;
-            findUser.FullName = user.FullName;
-            findUser.UserName = user.UserName;
-            findUser.Email = user.Email;
-            findUser.PhoneNumber = user.PhoneNumber;
-            findUser.AddressLine = user.AddressLine;
-            findUser.BirthDate = user.BirthDate;
-            findUser.Image = user.Image;
+            findUser.NumberId = model.NumberId;
+            findUser.FullName = model.FullName;
+            findUser.UserName = model.UserName;
+            findUser.Email = model.Email;
+            findUser.PhoneNumber = model.PhoneNumber;
+            findUser.AddressLine = model.AddressLine;
+            findUser.BirthDate = model.BirthDate;
+            findUser.Image = model.Image;
+            findUser.RoleId = model.RoleId;
 
             _context.Entry(findUser).State = EntityState.Modified;
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!UserExists(id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
 
             // Finally return the result to client
             return Ok(new JsonResult("The User with id " + id + " is Update."));
@@ -282,6 +295,34 @@ namespace API_Estate_management.Controllers
 
             // Finally return the result to client
             return Ok(new JsonResult("The User with Username : " + getName + " is Delete."));
+        }
+
+
+        // Checking existes User
+        private bool UserNameExistes(string userName)
+        {
+            return _context.Users.Any(x => x.UserName == userName);
+        }
+
+        private bool EmailExistes(string email)
+        {
+            return _context.Users.Any(x => x.Email == email);
+        }
+
+        private bool UserExists(string id)
+        {
+            return _context.Users.Count(u => u.Id == id) > 0;
+        }
+
+        // Checking type Email xx@xx.com && xx@xx.net
+        private bool IsEmailValid(string email)
+        {
+            Regex em = new Regex(@"\w+\@\w+.com|\w+\@\w+.net");
+            if (em.IsMatch(email))
+            {
+                return true;
+            }
+            return false;
         }
     }
 }

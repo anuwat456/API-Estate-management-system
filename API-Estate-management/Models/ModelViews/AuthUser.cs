@@ -12,6 +12,6 @@ namespace API_Estate_management.Models.Model
         public string Email { get; set; }
 
         [Required]
-        public string Token { get; set; }
+        public string authTokenKey { get; set; }
     }
 }

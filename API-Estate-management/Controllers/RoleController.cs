@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API_Estate_management.Models.Model;
+using API_Estate_management.Models.ModelViews;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -26,34 +27,59 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpGet("[action]")]
-        // GET: api/Role/GetRoles
-        public IActionResult GetRoles()
+        // GET: api/Role/GetAllRoles
+        public IActionResult GetAllRoles()
         {
             return Ok(_context.Roles.ToList());
         }
 
         [HttpPost("[action]")]
-        // POST: api/Role/AddRole
-        public async Task<IActionResult> AddRole([FromBody] ApplicationRole role)
+        // POST: api/Role/CreateRole
+        public async Task<IActionResult> CreateRole([FromBody] CreateRoleModel model)
         {
-            var newrole = new ApplicationRole
+            // Will hold all the errors related to registation
+            List<string> errorList = new List<string>();
+
+            if (model == null)
             {
-                Name = role.Name
-            };
+                return NotFound();
+            }
+            else if (ModelState.IsValid)
+            {
+                if (RoleExistes(model.Name))
+                {
+                    return BadRequest("Role already exists in the database.");
+                }
 
-            await _context.Roles.AddAsync(newrole);
-            await _context.SaveChangesAsync();
+                var newRole = new ApplicationRole
+                {
+                    Name = model.Name
+                };
 
-            return Ok(new JsonResult("The Role was add Successfully"));
+                var result = await _roleManager.CreateAsync(newRole);
+                if (result.Succeeded)
+                {
+                    return Ok(new JsonResult("The User was add Successfully"));
+                }
+                else
+                {
+                    return BadRequest(result.Errors);
+                }
+            }
+            return BadRequest(new JsonResult(errorList));
         }
 
-        [HttpPut("action/{id}")]
+        [HttpPut("[action]/{id}")]
         // PUT: api/Role/UpdateRole/id
-        public async Task<IActionResult> UpdateRole([FromRoute] string id, [FromBody] ApplicationRole role)
+        public async Task<IActionResult> UpdateRole([FromRoute] string id, [FromBody] UpdateRoleModel model)
         {
             if (!ModelState.IsValid)
             {
                 return BadRequest(ModelState);
+            }
+            if (RoleExistes(model.Name))
+            {
+                return BadRequest("Role already exists in the database.");
             }
 
             var findRole = _context.Roles.FirstOrDefault(r => r.Id == id);
@@ -63,8 +89,8 @@ namespace API_Estate_management.Controllers
             }
 
             // The Role was found
-            findRole.Name = role.Name;
-
+            findRole.Name = model.Name;
+            findRole.NormalizedName = model.Name.ToUpper();
 
             _context.Entry(findRole).State = EntityState.Modified;
             try
@@ -86,12 +112,7 @@ namespace API_Estate_management.Controllers
             // Finally return the result to client
             return Ok(new JsonResult("The Role with id " + id + " is Update."));
         }
-
-        // Check Roles Exisists
-        private bool RolesExists(string id)
-        {
-            return _context.Roles.Any(r => r.Id == id);
-        }
+        
 
         [HttpDelete("[action]/{id}")]
         // DELETE: api/Role/DeleteRole/id
@@ -114,6 +135,18 @@ namespace API_Estate_management.Controllers
 
             // Finally return the result to client
             return Ok(new JsonResult("The Role with id " + id + " is Delete."));
+        }
+
+
+        // Checking existes Role
+        private bool RoleExistes(string name)
+        {
+            return _context.Roles.Any(x => x.Name == name);
+        }
+
+        private bool RolesExists(string id)
+        {
+            return _context.Roles.Any(r => r.Id == id);
         }
     }
 }
