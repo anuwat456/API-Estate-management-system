@@ -136,9 +136,6 @@ D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.csprojAssemblyReference.cache
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.AssemblyInfoInputs.cache
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.AssemblyInfo.cs
-D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.csproj.CoreCompileInputs.cache
-D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.MvcApplicationPartsAssemblyInfo.cs
-D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.MvcApplicationPartsAssemblyInfo.cache
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.RazorTargetAssemblyInfo.cache
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.csproj.CopyComplete
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\staticwebassets\API-Estate-management.StaticWebAssets.Manifest.cache
@@ -146,3 +143,12 @@ D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.dll
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.pdb
 D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.genruntimeconfig.cache
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\bin\Debug\netcoreapp3.1\EntityFramework.SqlServer.dll
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\bin\Debug\netcoreapp3.1\EntityFramework.dll
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\bin\Debug\netcoreapp3.1\System.CodeDom.dll
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\bin\Debug\netcoreapp3.1\System.Data.SqlClient.dll
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\bin\Debug\netcoreapp3.1\runtimes\unix\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\bin\Debug\netcoreapp3.1\runtimes\win\lib\netcoreapp2.1\System.Data.SqlClient.dll
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.csproj.CoreCompileInputs.cache
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.MvcApplicationPartsAssemblyInfo.cs
+D:\Housing estate\API_SIM\API-Estate-management\API-Estate-management-system\API-Estate-management\obj\Debug\netcoreapp3.1\API-Estate-management.MvcApplicationPartsAssemblyInfo.cache

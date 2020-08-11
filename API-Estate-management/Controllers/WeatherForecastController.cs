@@ -8,7 +8,6 @@ using Microsoft.Extensions.Logging;
 
 namespace API_Estate_management.Controllers
 {
-    [Authorize(Policy = "RequireLoggedIn")]
     [ApiController]
     [Route("[controller]")]
     public class WeatherForecastController : ControllerBase

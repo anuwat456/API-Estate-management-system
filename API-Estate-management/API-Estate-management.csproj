@@ -10,9 +10,16 @@
     <Compile Remove="Data\Migrations\20200729113830_InitialCreate.Designer.cs" />
     <Compile Remove="Data\Migrations\20200803012309_initialCreate.cs" />
     <Compile Remove="Data\Migrations\20200803012309_initialCreate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200810151420_createReferncePermissiontoRole.cs" />
+    <Compile Remove="Data\Migrations\20200810151420_createReferncePermissiontoRole.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200810151711_createReferncePermissiontoRole.cs" />
+    <Compile Remove="Data\Migrations\20200810151711_createReferncePermissiontoRole.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200810152122_createReferncePermissiontoRole.cs" />
+    <Compile Remove="Data\Migrations\20200810152122_createReferncePermissiontoRole.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.6" />

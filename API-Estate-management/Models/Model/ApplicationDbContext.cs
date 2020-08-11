@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
+﻿using API_Estate_management.Models.Configurations;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -14,6 +16,30 @@ namespace API_Estate_management.Models.Model
         {
 
         }
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            base.OnModelCreating(modelBuilder);
+
+            modelBuilder.Entity<ApplicationRolePermission>().HasKey(rp => new { rp.RoleId, rp.PermissionId });
+            modelBuilder.Entity<ApplicationRolePermission>().HasIndex(rp => rp.PermissionId);
+
+            modelBuilder.Entity<ApplicationRolePermission>()
+                .HasOne<ApplicationRole>(rp => rp.Role)
+                .WithMany(r => r.RolePermissions)
+                .HasForeignKey(rp => rp.RoleId);
+
+            modelBuilder.Entity<ApplicationRolePermission>()
+                .HasOne<ApplicationPermission>(rp => rp.Permission)
+                .WithMany(p => p.RolePermissions)
+                .HasForeignKey(rp => rp.PermissionId);
+        }
+
+        // Entities
+        public DbSet<ApplicationPermission> Permissions { get; set; }
+        public DbSet<ApplicationRolePermission> RolePermissions { get; set; }
+
+
 
         // Create Roles for or application
         /*

@@ -19,11 +19,13 @@ namespace API_Estate_management.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly RoleManager<ApplicationRole> _roleManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public RoleController(ApplicationDbContext context, RoleManager<ApplicationRole> roleManager)
+        public RoleController(ApplicationDbContext context, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _roleManager = roleManager;
+            _userManager = userManager;
         }
 
         [HttpGet("[action]")]

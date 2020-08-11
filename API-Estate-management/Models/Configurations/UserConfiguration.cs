@@ -17,8 +17,8 @@ namespace API_Estate_management.Models.Configurations
 
             // The relationships between Role and other entity types
             // Note that these relationships are configured with no navigation properties
-            builder.HasOne(u => u.Roles)
-                .WithMany(r => r.Users)
+            builder.HasOne(u => u.Role)
+                .WithMany(r => r.User)
                 .HasForeignKey(u => u.RoleId);
         }
     }
