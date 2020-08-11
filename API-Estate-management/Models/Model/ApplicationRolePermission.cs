@@ -11,6 +11,6 @@ namespace API_Estate_management.Models.Model
         public string RoleId { get; set; }
 
         public ApplicationPermission Permission { get; set; }
-        public int PermissionId { get; set; }
+        public string PermissionId { get; set; }
     }
 }

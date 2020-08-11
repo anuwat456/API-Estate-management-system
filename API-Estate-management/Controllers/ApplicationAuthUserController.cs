@@ -195,7 +195,7 @@ namespace API_Estate_management.Controllers
 
                 if (IsEmailValid(model.Email))
                 {
-                    var newuser = new ApplicationUser
+                    var newUser = new ApplicationUser
                     {
                         NumberId = model.NumberId,
                         FullName = model.FullName,
@@ -208,7 +208,7 @@ namespace API_Estate_management.Controllers
                         RoleId = _options.Value.SetRoleDefault          // Set Role default is Manager
                     };
 
-                    var result = await _userManager.CreateAsync(newuser, model.Password);
+                    var result = await _userManager.CreateAsync(newUser, model.Password);
                     if (result.Succeeded)
                     {
                         return Ok(new JsonResult("The User was add Successfully"));
@@ -288,6 +288,7 @@ namespace API_Estate_management.Controllers
                 return NotFound();
             }
 
+            // Get Name User
             var getName = await _userManager.GetUserNameAsync(findUser);
 
             _context.Users.Remove(findUser);

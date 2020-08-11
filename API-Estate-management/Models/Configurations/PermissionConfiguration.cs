@@ -15,6 +15,9 @@ namespace API_Estate_management.Models.Configurations
             // Primary Key
             builder.HasKey(p => p.Id);
 
+            // Auto-increment Primary key
+            builder.Property(p => p.Id).ValueGeneratedOnAdd();
+
             // The relationships between Role and other entity types
             // Note that these relationships are configured with no navigation properties
         }

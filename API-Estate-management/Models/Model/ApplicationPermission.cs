@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -10,7 +11,8 @@ namespace API_Estate_management.Models.Model
     public class ApplicationPermission
     {
         [Key]
-        public int Id { get; set; }
+        [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
+        public string Id { get; set; }
 
         [StringLength(256), Required]
         public string Name { get; set; }
@@ -18,7 +20,7 @@ namespace API_Estate_management.Models.Model
         [StringLength(256), Required]
         public string Level { get; set; }
 
-        public int ParentId { get; set; }        // Will ParentId reference from Id 
+        public string ParentId { get; set; }        // Will ParentId reference from Id 
 
         [StringLength(256), Required]
         public string Title { get; set; }

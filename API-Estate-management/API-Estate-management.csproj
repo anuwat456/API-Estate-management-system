@@ -16,10 +16,15 @@
     <Compile Remove="Data\Migrations\20200810151711_createReferncePermissiontoRole.Designer.cs" />
     <Compile Remove="Data\Migrations\20200810152122_createReferncePermissiontoRole.cs" />
     <Compile Remove="Data\Migrations\20200810152122_createReferncePermissiontoRole.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200811124145_createPermission.cs" />
+    <Compile Remove="Data\Migrations\20200811124145_createPermission.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200811131022_addAutoincrementwithPrimaryKeyandChangeTypeValue.cs" />
+    <Compile Remove="Data\Migrations\20200811131022_addAutoincrementwithPrimaryKeyandChangeTypeValue.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200811131531_addAutoincrementwithPrimaryKeyandChangeTypeValue.cs" />
+    <Compile Remove="Data\Migrations\20200811131531_addAutoincrementwithPrimaryKeyandChangeTypeValue.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="EntityFramework" Version="6.4.4" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="3.1.6" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="3.1.6" />
@@ -31,6 +36,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Data\Migrations\" />
     <Folder Include="Repository\" />
   </ItemGroup>
 
