@@ -22,6 +22,18 @@
     <Compile Remove="Data\Migrations\20200811131022_addAutoincrementwithPrimaryKeyandChangeTypeValue.Designer.cs" />
     <Compile Remove="Data\Migrations\20200811131531_addAutoincrementwithPrimaryKeyandChangeTypeValue.cs" />
     <Compile Remove="Data\Migrations\20200811131531_addAutoincrementwithPrimaryKeyandChangeTypeValue.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200812100740_initialCreate.cs" />
+    <Compile Remove="Data\Migrations\20200812100740_initialCreate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200812104106_initialCreate.cs" />
+    <Compile Remove="Data\Migrations\20200812104106_initialCreate.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200814182225_createMaintenanceReferencetoHouse.cs" />
+    <Compile Remove="Data\Migrations\20200814182225_createMaintenanceReferencetoHouse.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200815161119_createCommonFeeReferencetoHouse.cs" />
+    <Compile Remove="Data\Migrations\20200815161119_createCommonFeeReferencetoHouse.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200815162039_createCommonFeeReferencetoHouse.cs" />
+    <Compile Remove="Data\Migrations\20200815162039_createCommonFeeReferencetoHouse.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200815162234_createCommonFeeReferencetoHouse.cs" />
+    <Compile Remove="Data\Migrations\20200815162234_createCommonFeeReferencetoHouse.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +48,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Data\Migrations\" />
     <Folder Include="Repository\" />
   </ItemGroup>
 

@@ -8,10 +8,10 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 
 namespace API_Estate_management.Controllers
 {
+    [Authorize(Policy = "RequireAdministratorRole")]
     [Route("api/[controller]")]
     [ApiController]
     public class PermissionController : ControllerBase
@@ -24,7 +24,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpGet("[action]")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // GET: api/Permission/GetAllPermissions
         public IActionResult GetAllPermissions()
         {
@@ -32,7 +31,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpPost("[action]")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // POST: api/Permission/CreatePermission
         public async Task<IActionResult> CreatePermission([FromBody] CreatePermissionModel model)
         {
@@ -65,7 +63,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpPut("[action]/{id}")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // PUT: api/Permission/UpdatePermission/id
         public async Task<IActionResult> UpdatePermission([FromRoute] string id, [FromBody] CreatePermissionModel model)
         {
@@ -108,7 +105,6 @@ namespace API_Estate_management.Controllers
         }
 
         [HttpDelete("[action]/{id}")]
-        [Authorize(Policy = "RequireAdministratorRole")]
         // DELETE: api/Permission/DeletePermission/id
         public async Task<IActionResult> DeletePermission([FromRoute] string id)
         {
@@ -128,7 +124,7 @@ namespace API_Estate_management.Controllers
             await _context.SaveChangesAsync();
 
             // Finally return the result to client
-            return Ok(new JsonResult("The User with id : " + id + " is Delete."));
+            return Ok(new JsonResult("The Permission with id : " + id + " is Delete."));
         }
 
 

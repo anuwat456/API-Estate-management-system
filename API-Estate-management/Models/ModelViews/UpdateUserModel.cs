@@ -9,7 +9,7 @@ namespace API_Estate_management.Models.ModelViews
     public class UpdateUserModel
     {
         [StringLength(13)]
-        public string NumberId { get; set; }
+        public string IdNumber { get; set; }
 
         [StringLength(50)]
         public string FullName { get; set; }

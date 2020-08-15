@@ -1,4 +1,5 @@
 ﻿using API_Estate_management.Models.Configurations;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
@@ -26,7 +27,7 @@ namespace API_Estate_management.Models.Model
 
             modelBuilder.Entity<ApplicationRolePermission>()
                 .HasOne<ApplicationRole>(rp => rp.Role)
-                .WithMany(r => r.RolePermissions)
+                .WithMany(r => r.Permissions)
                 .HasForeignKey(rp => rp.RoleId);
 
             modelBuilder.Entity<ApplicationRolePermission>()
@@ -38,6 +39,12 @@ namespace API_Estate_management.Models.Model
         // Entities
         public DbSet<ApplicationPermission> Permissions { get; set; }
         public DbSet<ApplicationRolePermission> RolePermissions { get; set; }
+        public DbSet<ApplicationNews> News { get; set; }
+        public DbSet<ApplicationHouse> Houses { get; set; }
+        public DbSet<ApplicationHouseType> HouseTypes { get; set; }
+        public DbSet<ApplicationMaintenance> Maintenances { get; set; }
+        public DbSet<ApplicationCommonFee> CommonFees { get; set; }
+        public DbSet<ApplicationCommonFeeType> CommonFeeTypes { get; set; }
 
 
 

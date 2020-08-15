@@ -10,5 +10,7 @@ namespace API_Estate_management.Models.ModelViews
     {
         [StringLength(256)]
         public string Name { get; set; }
+
+        public bool IsCoreRole { get; set; }
     }
 }

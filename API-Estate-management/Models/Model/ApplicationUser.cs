@@ -12,7 +12,7 @@ namespace API_Estate_management.Models.Model
     public class ApplicationUser : IdentityUser
     {
         [StringLength(13)]
-        public string NumberId { get; set; }
+        public string IdNumber { get; set; }
 
         [StringLength(50)]
         public string FullName { get; set; }
@@ -26,7 +26,17 @@ namespace API_Estate_management.Models.Model
         [StringLength(100)]
         public string Image { get; set; }
 
+
         public ApplicationRole Role { get; set; }
         public string RoleId { get; set; }
+
+        public virtual ICollection<ApplicationNews> News { get; set; }
+
+        public virtual ICollection<ApplicationHouse> Houses { get; set; }
+
+        public ApplicationUser()
+        {
+
+        }
     }
 }

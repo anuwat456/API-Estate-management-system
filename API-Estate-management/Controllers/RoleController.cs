@@ -55,7 +55,8 @@ namespace API_Estate_management.Controllers
 
                 var newRole = new ApplicationRole
                 {
-                    Name = model.Name
+                    Name = model.Name,
+                    IsCoreRole = false
                 };
 
                 var result = await _roleManager.CreateAsync(newRole);
@@ -93,6 +94,7 @@ namespace API_Estate_management.Controllers
             // The Role was found
             findRole.Name = model.Name;
             findRole.NormalizedName = model.Name.ToUpper();
+            findRole.IsCoreRole = false;
 
             _context.Entry(findRole).State = EntityState.Modified;
             try
@@ -137,6 +139,25 @@ namespace API_Estate_management.Controllers
 
             // Finally return the result to client
             return Ok(new JsonResult("The Role with id " + id + " is Delete."));
+        }
+
+        // Role Permission
+
+        [HttpPost("[action]/{idPermission}&{idRole}")]
+        // POST: api/Role/CreateRolePermission/{idPermission}&{idRole}
+        public async Task<IActionResult> CreateRolePermission([FromRoute] string idPermission, [FromRoute] string idRole, [FromBody] CreateRoleModel model)
+        {
+            var newRolePermission = new ApplicationRolePermission
+            {
+                PermissionId = idPermission,
+                RoleId = idRole
+            };
+
+            _context.RolePermissions.Add(newRolePermission);
+            await _context.SaveChangesAsync();
+
+            // Finally return the result to client
+            return Ok(new JsonResult("The RolePermission was add Successfully"));
         }
 
 

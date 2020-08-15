@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace API_Estate_management.Models.ModelViews
 {
-    public class CreateRoleModel
+    public class CreateHouseTypeModel
     {
         [StringLength(256), Required]
-        public string Name { get; set; }
-
-        [Required]
-        public bool IsCoreRole { get; set; }
+        public string Type { get; set; }
     }
 }

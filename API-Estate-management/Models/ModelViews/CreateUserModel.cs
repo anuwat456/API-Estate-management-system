@@ -9,18 +9,18 @@ namespace API_Estate_management.Models.ModelViews
     public class CreateUserModel
     {
         [StringLength(13), Required]
-        public string NumberId { get; set; }
+        public string IdNumber { get; set; }
 
         [StringLength(50), Required]
         public string FullName { get; set; }
 
-        [StringLength(256), Required]
+        [StringLength(256)]
         public string UserName { get; set; }
 
-        [StringLength(256), Required]
+        [StringLength(256), Required, DataType(DataType.EmailAddress)]
         public string Email { get; set; }
 
-        [StringLength(256), Required]
+        [StringLength(256)]
         public string Password { get; set; }
 
         [StringLength(256), Required]

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Claims;
@@ -195,9 +196,12 @@ namespace API_Estate_management.Controllers
 
                 if (IsEmailValid(model.Email))
                 {
+                    // Date of Birth format Datetime
+                    string formatBirthDate = model.BirthDate.ToString();
+
                     var newUser = new ApplicationUser
                     {
-                        NumberId = model.NumberId,
+                        IdNumber = model.IdNumber,
                         FullName = model.FullName,
                         UserName = model.UserName,
                         Email = model.Email,
@@ -207,6 +211,8 @@ namespace API_Estate_management.Controllers
                         Image = _options.Value.DefaultImageUrl,
                         RoleId = _options.Value.SetRoleDefault          // Set Role default is Manager
                     };
+
+                    // The task was not Add() the password could not be encode.
 
                     var result = await _userManager.CreateAsync(newUser, model.Password);
                     if (result.Succeeded)
@@ -239,16 +245,26 @@ namespace API_Estate_management.Controllers
                 return NotFound();
             }
 
+            // Date of Birth format Datetime
+            string formatBirthDate = model.BirthDate.ToString();
+
             // The User was found
-            findUser.NumberId = model.NumberId;
+            findUser.IdNumber = model.IdNumber;
             findUser.FullName = model.FullName;
             findUser.UserName = model.UserName;
+            findUser.NormalizedUserName = model.UserName.ToUpper();
             findUser.Email = model.Email;
+            findUser.NormalizedEmail = model.Email.ToUpper();
             findUser.PhoneNumber = model.PhoneNumber;
             findUser.AddressLine = model.AddressLine;
             findUser.BirthDate = model.BirthDate;
             findUser.Image = model.Image;
-            findUser.RoleId = model.RoleId;
+
+            if (model.RoleId == null)
+            {
+                findUser.RoleId = model.RoleId;
+            }
+            findUser.RoleId = _options.Value.SetRoleDefault;          // Set Role default is Manager
 
             _context.Entry(findUser).State = EntityState.Modified;
             try
@@ -282,7 +298,7 @@ namespace API_Estate_management.Controllers
             }
 
             // The User was found
-            var findUser = await _context.Users.FindAsync(id);
+            var findUser = _context.Users.FirstOrDefault(u => u.Id == id);
             if (findUser == null)
             {
                 return NotFound();
